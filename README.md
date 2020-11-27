@@ -1,8 +1,8 @@
-# 官話耶魯拼音／Yale romanization of Mandarin
+# 漢語官話耶魯拼音／Yale romanization of Mandarin
 
 配方： ℞ **baopaau/rime-yale-mandarin**
 
-[Rime](http://rime.im) 官話/國語/漢語/普通話/華語 耶魯/雅禮 拼音 輸入方案。
+[Rime](http://rime.im) 耶魯拼音 輸入方案。
 
 ## 安裝
 
