@@ -1,0 +1,318 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: yale_mandarin
+  name: 耶魯官拼
+  version: "1.0"
+  author:
+    - 金守拙 (George A. Kennedy)
+    - Baopaau <baopaau@gmail.com>
+
+  description: |
+    官話/漢語/普通話/華語 耶魯/雅禮 拼音 (Yale romanization of Mandarin)
+
+    ㄅㄛ、ㄆㄛ、ㄇㄛ、ㄈㄛ 拼爲 bwo, pwo, mwo, fwo (ㄅㄨㄛ、ㄆㄨㄛ、ㄇㄨㄛ、ㄈㄨㄛ)
+    
+    在音節後鍵入V(陰平)、VV(陽平)、X(上)、Q(去)以輸入聲調。
+
+    未開始輸入前，按V鍵使用反查功能。
+    
+  dependencies:
+    - terra_pinyin
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, ASCII ]
+  - name: full_shape
+    states: [ 半寬, 全寬 ]
+  - options: [ noop, simplification, trad_tw ]
+    states: [ 原形, 陆简, 臺正 ]
+    # 修改下行註釋，改變預設用字 [0, 1, 2 --> 對應上表]
+    reset: 0
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+  - name: emoji_suggestion
+    states: [ 無繪文字 , 帶繪文字 ]
+    # 取消下行註釋，預設啓動 emoji
+    reset: 1
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator
+    - table_translator@custom_phrase
+    - script_translator
+  filters:
+    - simplifier@trad_tw
+    - simplifier
+    - simplifier@emoji_suggestion
+    #- reverse_lookup_filter
+    - uniquifier
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " '"
+  algebra:
+    - erase/^xx$/
+    - xform/^r5$/er5/
+
+    - derive/[1234]/5/
+    
+    # 轉寫
+    - xform/^([jqx])u/$1v/
+    - xform/^([bpmf])o/$1uo/
+
+    - xform/^([zcs])hi([1-5])$/$1hr$2/
+    - xform/^ri([1-5])$/r$1/
+    - xform/^zh/j/
+    - xform/^q/ch/
+    - xform/^x/sy/
+
+    - xform/^([zcs])i([1-5])$/$1z$2/
+    - xform/^z([aeiouz])/dz$1/
+    - xform/^c([aeiouz])/ts$1/
+    - xform/^dzz([1-5])$/dz$1/
+
+    - xform/iu([1-5])$/iou$1/
+    - xform/v/iu/
+    - xform/ui([1-5])$/uei$1/
+    - xform/ao([1-5])$/au$1/
+    - xform/([^y])un([1-5])$/$1uen$2/
+    - xform/ong([1-5])$/ung$1/
+
+    # 模糊音
+    - derive/([^iu][iea]n)g([1-5])$/$1$2/ # in<-ing/en<-eng/an<-ang
+    - derive/([^iu][iea]n)([1-5])$/$1g$2/ # in->ing/en->eng/an->ang
+
+    # 轉寫(續)
+    - xform/iu([aeiou])/yw$1/
+    - xform/i([aeiou])/y$1/
+    - xform/u([aeiou])/w$1/
+    - xform/^syy/sy/
+
+    # 不分wo/o
+    - derive/^([bpmfdtnlgkhjcsr][hy]?)wo/$1o/ # lo(咯)
+
+    # 容許混淆
+    - derive/wen([1-5])$/wn$1/
+    - derive/wei/wi/
+    - derive/au/ao/
+    - derive/ung/ong/
+    - derive/(\w)yw([aeion])/$1iu$2/
+    - derive/(\w)y([aeoun])/$1i$2/
+    - derive/(\w)w([aeion])/$1u$2/
+    - derive/yw/yu/
+    - derive/^sy/sh/
+
+    # 簡寫
+    - derive/^dz/z/
+    - derive/^ts/c/
+
+    # 簡拼
+    - abbrev/^([a-z]).+$/$1/
+    #- abbrev/^([a-z]{2}).+$/$1/ # 允許前面任意2個字母簡拼
+    - abbrev/^(ts|dz|[cs]h).+$/$1/ # 只允許聲母簡拼
+    
+    # 聲調鍵
+    - xform/1$/v/
+    - xform/2$/vv/
+    - xform/3$/x/
+    - xform/4$/q/
+    - xform/5$//
+    - derive/x$/vvv/
+    - derive/q$/vvvv/
+    - derive/q$/xx/
+
+    # QWERTY鍵位容錯
+    # ！請根據自己的詞典契合度和設備性能酌量啓用
+    # ！非QWERTY用戶請完全註釋下列項
+    - fuzz/o/p/
+    - fuzz/p/o/
+    - fuzz/q/w/
+    - fuzz/w/q/
+    - fuzz/k/l/
+    - fuzz/l/k/
+    - fuzz/a/s/
+    - fuzz/s/a/
+
+    - fuzz/w/e/
+    - fuzz/e/w/
+    - fuzz/i/o/
+    - fuzz/o/i/
+    - fuzz/s/d/
+    - fuzz/d/s/
+    - fuzz/j/k/
+    - fuzz/k/j/
+    - fuzz/z/x/
+    - fuzz/x/z/
+    - fuzz/n/m/
+    - fuzz/m/n/
+
+    #- fuzz/x/c/
+    #- fuzz/c/x/
+    #- fuzz/b/n/
+    #- fuzz/n/b/
+    #- fuzz/d/f/
+    #- fuzz/f/d/
+    #- fuzz/h/j/
+    #- fuzz/j/h/
+    #- fuzz/e/r/
+    #- fuzz/r/e/
+    #- fuzz/u/i/
+    #- fuzz/i/u/
+    #- fuzz/r/t/
+    #- fuzz/t/r/
+    #- fuzz/y/u/
+    #- fuzz/u/y/
+
+    #- fuzz/f/g/
+    #- fuzz/g/f/
+    #- fuzz/g/h/
+    #- fuzz/h/g/
+    #- fuzz/c/v/
+    #- fuzz/v/c/
+    #- fuzz/v/b/
+    #- fuzz/b/v/
+    #- fuzz/t/y/
+    #- fuzz/y/t/
+
+translator:
+  dictionary: terra_pinyin
+  prism: yale_mandarin
+  strict_spelling: true # fuzz項只在連詞拼寫中有效
+  spelling_hints: 7
+  comment_format: &comment
+    # 轉譯爲MPS2
+    - xform/\<r5\>/er5/
+
+    - xform/\<([jqx])u/$1v/
+    - xform/\<([bpmf])o/$1uo/
+
+    - xform/\<([zcs])hi([1-5])\>/$1hr$2/
+    - xform/\<ri([1-5])\>/r$1/
+    - xform/\<zh/j/
+    - xform/\<q/ch/
+    - xform/\<x/sy/
+
+    - xform/\<([zcs])i([1-5])\>/$1z$2/
+    - xform/\<z([aeiouz])/dz$1/
+    - xform/\<c([aeiouz])/ts$1/
+    - xform/\<dzz([1-5])\>/dz$1/
+
+    - xform/iu([1-5])\>/iou$1/
+    - xform/v/iu/
+    - xform/ui([1-5])\>/uei$1/
+    - xform/ao([1-5])\>/au$1/
+    - xform/([^y])un([1-5])\>/$1uen$2/
+    - xform/ong([1-5])\>/ung$1/
+
+    - xform/iu([aeiou])/yw$1/
+    - xform/i([aeiou])/y$1/
+    - xform/u([aeiou])/w$1/
+    - xform/\<syy/sy/
+
+    # 正詞法（按需啓用）
+    - xform/^(\w*[aeiourzng][1-5]) ([aeiourng]\w*?[1-5])$/$1-$2/
+    - xform/([aeiou])-g/$1g/
+    - xform/g-g/gg/
+    - xform/^(\S+?) (\S+?)$/$1$2/
+
+    # 轉換特殊字母
+    - xform ([aeiou])(ng?|r)([1234]) $1$3$2
+    - xform ([aeo])([iuo])([1234]) $1$3$2
+    - xform a1 ā
+    - xform a2 á
+    - xform a3 ǎ
+    - xform a4 à
+    - xform e1 ē
+    - xform e2 é
+    - xform e3 ě
+    - xform e4 è
+    - xform o1 ō
+    - xform o2 ó
+    - xform o3 ǒ
+    - xform o4 ò
+    - xform i1 ī
+    - xform i2 í
+    - xform i3 ǐ
+    - xform i4 ì
+    - xform u1 ū
+    - xform u2 ú
+    - xform u3 ǔ
+    - xform u4 ù
+    - xform r1 r̄
+    - xform r2 ŕ
+    - xform r3 ř
+    - xform r4 r̀
+    - xform z1 z̄
+    - xform z2 ź
+    - xform z3 ž
+    - xform z4 z̀
+    - xform/eh[0-5]?/ê/
+    - xform/([a-z]+)[0-5]/$1/
+    
+  preedit_format:
+    - xform/([aeiourzng])vvvv/${1}4[Q]/
+    - xform/([aeiourzng])vvv/${1}3[X]/
+    - xform/([aeiourzng])vv/${1}2/
+    - xform/([aeiourzng])v/${1}1/
+    - xform/([aeiourzng])xx/${1}4[X]/
+    - xform/([aeiourzng])x/${1}3/
+    - xform/([aeiourzng])q/${1}4/
+    #- xlit/12345/¹²³⁴⁵/
+    - "xform/'/-/"
+    
+custom_phrase:
+  dictionary: ""
+  user_dict: custom_phrase
+  db_class: stabledb
+  enable_completion: false
+  enable_sentence: false
+  initial_quality: 1
+    
+reverse_lookup:
+  overwrite_comment: true
+  dictionary: terra_pinyin
+  prism: terra_pinyin
+  prefix: "v"
+  suffix: "'"
+  tips: 〔拼音〕
+  comment_format: *comment
+
+trad_tw:
+  option_name: trad_tw
+  opencc_config: t2tw.json
+
+emoji_suggestion:
+  opencc_config: emoji.json
+  option_name: emoji_suggestion
+  tips: all
+  
+punctuator:
+  import_preset: symbols
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: "^/.*$"
+    reverse_lookup: "^v.*$"
