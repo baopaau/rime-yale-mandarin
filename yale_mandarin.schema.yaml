@@ -119,7 +119,8 @@ speller:
     - derive/(\w)y([aeoun])/$1i$2/
     - derive/(\w)w([aeion])/$1u$2/
     - derive/yw/yu/
-    - derive/^sy/sh/
+    - derive/^syi/si/
+    - derive/^sy/shi/
 
     # 簡寫
     - derive/^dz/z/
@@ -258,12 +259,12 @@ translator:
     - xform u3 ǔ
     - xform u4 ù
     - xform r1 r̄
-    - xform r2 ŕ
-    - xform r3 ř
+    - xform r2 ŕ
+    - xform r3 ř
     - xform r4 r̀
     - xform z1 z̄
-    - xform z2 ź
-    - xform z3 ž
+    - xform z2 ź
+    - xform z3 ž
     - xform z4 z̀
     - xform/eh[0-5]?/ê/
     - xform/([a-z]+)[0-5]/$1/
