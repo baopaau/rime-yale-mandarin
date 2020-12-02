@@ -4,7 +4,7 @@
 schema:
   schema_id: yale_mandarin
   name: 耶魯官拼
-  version: "1.0"
+  version: "1.1"
   author:
     - 金守拙 (George A. Kennedy)
     - Baopaau <baopaau@gmail.com>
@@ -15,6 +15,11 @@ schema:
     ㄅㄛ、ㄆㄛ、ㄇㄛ、ㄈㄛ 拼爲 bwo, pwo, mwo, fwo (ㄅㄨㄛ、ㄆㄨㄛ、ㄇㄨㄛ、ㄈㄨㄛ)
     
     在音節後鍵入V(陰平)、VV(陽平)、X(上)、Q(去)以輸入聲調。
+
+    容許的簡寫法：
+    1）dz/tsz/sz -> z/cz/sz
+    2）jr/chr/shr/r -> jr/cr/sr/r
+    3）ji/chi/syi -> ji/ci/si
 
     未開始輸入前，按V鍵使用反查功能。
     
@@ -119,12 +124,13 @@ speller:
     - derive/(\w)y([aeoun])/$1i$2/
     - derive/(\w)w([aeion])/$1u$2/
     - derive/yw/yu/
-    - derive/^syi/si/
-    - derive/^sy/shi/
 
     # 簡寫
     - derive/^dz/z/
     - derive/^ts/c/
+    - derive/^ch([ir])/c$1/
+    - derive/^syi/si/
+    - derive/^shr/sr/
 
     # 簡拼
     - abbrev/^([a-z]).+$/$1/
@@ -153,18 +159,18 @@ speller:
     - fuzz/a/s/
     - fuzz/s/a/
 
-    - fuzz/w/e/
-    - fuzz/e/w/
-    - fuzz/i/o/
-    - fuzz/o/i/
-    - fuzz/s/d/
-    - fuzz/d/s/
-    - fuzz/j/k/
-    - fuzz/k/j/
-    - fuzz/z/x/
-    - fuzz/x/z/
-    - fuzz/n/m/
-    - fuzz/m/n/
+    #- fuzz/w/e/
+    #- fuzz/e/w/
+    #- fuzz/i/o/
+    #- fuzz/o/i/
+    #- fuzz/s/d/
+    #- fuzz/d/s/
+    #- fuzz/j/k/
+    #- fuzz/k/j/
+    #- fuzz/z/x/
+    #- fuzz/x/z/
+    #- fuzz/n/m/
+    #- fuzz/m/n/
 
     #- fuzz/x/c/
     #- fuzz/c/x/
