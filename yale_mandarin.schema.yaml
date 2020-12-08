@@ -4,7 +4,7 @@
 schema:
   schema_id: yale_mandarin
   name: 耶魯官拼
-  version: "1.1"
+  version: "1.2"
   author:
     - 金守拙 (George A. Kennedy)
     - Baopaau <baopaau@gmail.com>
@@ -76,7 +76,8 @@ speller:
   delimiter: " '"
   algebra:
     - erase/^xx$/
-    - xform/^r5$/er5/
+    - xform/^r5$/er5/  # 〜兒
+    - xform/^wong4$/weng4/ # 𥥈/𥦷
 
     - derive/[1234]/5/
     
@@ -91,20 +92,21 @@ speller:
     - xform/^x/sy/
 
     - xform/^([zcs])i([1-5])$/$1z$2/
-    - xform/^z([aeiouz])/dz$1/
-    - xform/^c([aeiouz])/ts$1/
+    - xform/^([zcs])ii([1-5])$/$1i$2/ # 尖音字碼表用
+    - xform/^z([aeiouvz])/dz$1/
+    - xform/^c([aeiouvz])/ts$1/
     - xform/^dzz([1-5])$/dz$1/
 
     - xform/iu([1-5])$/iou$1/
     - xform/v/iu/
     - xform/ui([1-5])$/uei$1/
     - xform/ao([1-5])$/au$1/
-    - xform/([^y])un([1-5])$/$1uen$2/
+    - xform/([^yi])un([1-5])$/$1uen$2/
     - xform/ong([1-5])$/ung$1/
 
     # 模糊音
-    - derive/([^iu][iea]n)g([1-5])$/$1$2/ # in<-ing/en<-eng/an<-ang
-    - derive/([^iu][iea]n)([1-5])$/$1g$2/ # in->ing/en->eng/an->ang
+    - fuzz/([^iu][iea]n)g([1-5])$/$1$2/ # in<-ing/en<-eng/an<-ang
+    - fuzz/([^iu][iea]n)([1-5])$/$1g$2/ # in->ing/en->eng/an->ang
 
     # 轉寫(續)
     - xform/iu([aeiou])/yw$1/
@@ -128,9 +130,9 @@ speller:
     # 簡寫
     - derive/^dz/z/
     - derive/^ts/c/
-    - derive/^ch([ir])/c$1/
-    - derive/^syi/si/
-    - derive/^shr/sr/
+    - derive/^([cs])hr/$1r/
+    #- derive/^chi/ci/ # 若使用尖音字碼表，請註釋此行
+    #- derive/^syi/si/ # 若使用尖音字碼表，請註釋此行
 
     # 簡拼
     - abbrev/^([a-z]).+$/$1/
@@ -206,8 +208,9 @@ translator:
   strict_spelling: true # fuzz項只在連詞拼寫中有效
   spelling_hints: 7
   comment_format: &comment
-    # 轉譯爲MPS2
-    - xform/\<r5\>/er5/
+    # 轉譯爲耶魯拼音
+    - xform/\<r5\>/er5/  # 〜兒
+    - xform/\<wong4\>/weng4/ # 𥥈/𥦷
 
     - xform/\<([jqx])u/$1v/
     - xform/\<([bpmf])o/$1uo/
@@ -219,15 +222,16 @@ translator:
     - xform/\<x/sy/
 
     - xform/\<([zcs])i([1-5])\>/$1z$2/
-    - xform/\<z([aeiouz])/dz$1/
-    - xform/\<c([aeiouz])/ts$1/
+    - xform/\<([zcs])ii([1-5])\>/$1i$2/ # 尖音字碼表用
+    - xform/\<z([aeiouvz])/dz$1/
+    - xform/\<c([aeiouvz])/ts$1/
     - xform/\<dzz([1-5])\>/dz$1/
 
     - xform/iu([1-5])\>/iou$1/
     - xform/v/iu/
     - xform/ui([1-5])\>/uei$1/
     - xform/ao([1-5])\>/au$1/
-    - xform/([^y])un([1-5])\>/$1uen$2/
+    - xform/([^yi])un([1-5])\>/$1uen$2/
     - xform/ong([1-5])\>/ung$1/
 
     - xform/iu([aeiou])/yw$1/
