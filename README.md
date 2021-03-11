@@ -1,4 +1,4 @@
-# 漢語官話耶魯拼音／Yale romanization of Mandarin
+# 國語耶魯拼音／Yale romanization of Mandarin
 
 配方： ℞ **baopaau/rime-yale-mandarin**
 
